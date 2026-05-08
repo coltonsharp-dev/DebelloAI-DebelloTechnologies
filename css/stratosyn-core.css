@@ -1,0 +1,3501 @@
+/* ============================================================
+   STRATOSYN · CORE STYLESHEET
+   stratosyn-core.css
+   DebelloAI-DebelloTechnologies / css / stratosyn-core.css
+   https://debelloai-debellotechnologies.github.io/DebelloAI-DebelloTechnologies/css/stratosyn-core.css
+
+   Covers:
+     1.  Google Fonts Import
+     2.  Design Tokens (CSS Custom Properties)
+     3.  Reset
+     4.  Base — Body, Background, Selection
+     5.  Brand Mark & Logo
+     6.  HUD — Slide Counter & Progress Bar
+     7.  Scene Strip — Slide Dot Navigation
+     8.  Nav Bar — Prev / Next Buttons
+     9.  Slide Engine — Slide Container & Transitions
+     10. Typography — Labels, Rules, Headings, Body
+     11. Info Box — .ibox
+     12. Agenda Layout — .ag-grid / .ag-row
+     13. Essential Question — .eq-banner / .eq-big
+     14. CLO Box — .clo-box / .sc-row
+     15. Element Box — .el-box (standard & jumbo) + all 11 category classes
+     16. Element Box — Interactive Callout Glow States
+     17. Flip Cards — Element Cards (S2 style)
+     18. Flip Cards — Family Cards (D02 style)
+     19. Full Periodic Table — Grid, Cells, Toolbar, Info Panel
+     20. Region Map — Mini PT region color overlay
+     21. Shell Builder — SVG diagram + controls + info panel
+     22. Bond Builder — D03 ionic / covalent interactive
+     23. Review Cards — D03 click-to-reveal grid
+     24. Periodic Trends — D02 trend visualization cards
+     25. Ionic vs Covalent Compare Grid — D03
+     26. Game Components — Bank, Tile, Zone, Mini-el, Scores, Reset
+     27. Game — Round 1 (Order in Row) specifics
+     28. Game — Round 2 (Group sort) specifics
+     29. Game — Round 3 (Metal / Nonmetal / Metalloid) specifics
+     30. Interactive Callout Rows
+     31. Canvas Post — Full component system (all inline → classes)
+     32. Student Quiz / Worksheet — Full component system
+     33. Utility Classes
+     34. Keyframe Animations
+     35. Responsive Breakpoints
+   ============================================================ */
+
+
+/* ============================================================
+   1. GOOGLE FONTS IMPORT
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Syne:wght@500;700;800&display=swap');
+
+
+/* ============================================================
+   2. DESIGN TOKENS — CSS CUSTOM PROPERTIES
+   ============================================================ */
+:root {
+
+  /* ── Core palette ── */
+  --void:    #06080f;       /* Page / slide background — absolute darkest */
+  --d1:      #0b0f1e;       /* Slightly lighter surface — cards, nav bg */
+  --tx:      #dde6f5;       /* Primary text */
+  --tx2:     #8898b8;       /* Secondary / subdued text */
+  --tx3:     #4a5570;       /* Tertiary / ghost text */
+
+  /* ── Accent — classroom board uses gold, canvas post / quiz use orange ── */
+  --accent:         #f5c842;                    /* Board accent: golden yellow */
+  --accent-soft:    rgba(245, 200, 66, 0.10);
+  --accent-line:    rgba(245, 200, 66, 0.22);
+  --accent-glow:    rgba(245, 200, 66, 0.45);
+
+  --orange:         #f97316;                    /* Canvas post + quiz accent */
+  --orange-soft:    rgba(249, 115, 22, 0.05);
+  --orange-line:    rgba(249, 115, 22, 0.12);
+  --orange-glow:    rgba(249, 115, 22, 0.50);
+
+  /* ── Signal colors ── */
+  --green:   #3effa0;
+  --blue:    #38bdf8;
+  --red:     #f87171;
+  --yellow:  #eab308;
+  --purple:  #c084fc;
+
+  /* ── Bonding-specific (D03) ── */
+  --ionic:    #3effa0;      /* Green for ionic bonds */
+  --covalent: #c084fc;      /* Purple for covalent bonds */
+
+  /* ── Element category colors ── */
+  --c-alkali:      #ef4444;
+  --c-alkaline:    #f97316;
+  --c-transition:  #eab308;
+  --c-post:        #22c55e;
+  --c-metalloid:   #14b8a6;
+  --c-nonmetal:    #3b82f6;
+  --c-halogen:     #8b5cf6;
+  --c-noble:       #a855f7;
+  --c-lanthanide:  #ec4899;
+  --c-actinide:    #f43f5e;
+  --c-unknown:     #64748b;
+
+  /* ── Font stacks ── */
+  --font-d: "Bebas Neue", "Impact", sans-serif;         /* Display / headings */
+  --font-b: "Syne", sans-serif;                         /* Brand name */
+  --font-m: "DM Mono", ui-monospace, monospace;         /* Body / UI / labels */
+  --font-fallback: "Courier New", Courier, monospace;   /* Canvas post fallback stack */
+
+  /* ── Borders ── */
+  --hr: 0.0625rem;          /* 1px hairline border */
+
+  /* ── Fluid layout spacing ── */
+  --px:   clamp(0.9rem, 4vw, 4.5rem);
+  --pt:   clamp(3.2rem, 6vh, 5rem);
+  --pb:   clamp(3.2rem, 6vh, 4.5rem);
+  --gap:  clamp(0.5rem, 1.2vw, 1rem);
+  --gap2: clamp(0.8rem, 2vw, 1.6rem);
+
+  /* ── Z-index layers ── */
+  --z-ui: 10;
+}
+
+
+/* ============================================================
+   3. RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+}
+
+
+/* ============================================================
+   4. BASE — BODY, BACKGROUND, SELECTION
+   ============================================================ */
+
+/* ── Classroom Board base ── */
+html.board,
+html.board body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--void);
+  color: var(--tx);
+  font-family: var(--font-m);
+}
+
+html.board body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgba(245, 200, 66, 0.05) 0%, transparent 65%),
+    radial-gradient(50% 40% at 80% 80%, rgba(56, 189, 248, 0.03) 0%, transparent 60%);
+}
+
+/* ── Day 2 board background variant (blue / green tint) ── */
+html.board-d2 body::before {
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgba(56, 189, 248, 0.05) 0%, transparent 65%),
+    radial-gradient(50% 40% at 20% 80%, rgba(62, 255, 160, 0.03) 0%, transparent 60%);
+}
+
+/* ── Day 3 board background variant (green tint) ── */
+html.board-d3 body::before {
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgba(62, 255, 160, 0.04) 0%, transparent 65%),
+    radial-gradient(50% 40% at 75% 75%, rgba(192, 132, 252, 0.03) 0%, transparent 60%);
+}
+
+/* ── Canvas post page background ── */
+body.canvas-post-page {
+  background: #ddd8cc;
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+  padding: 32px 16px 48px;
+}
+
+/* ── Quiz page base ── */
+html.quiz,
+html.quiz body {
+  background: var(--void);
+  color: var(--tx);
+  font-family: var(--font-m);
+  min-height: 100vh;
+}
+
+/* ── Global selection ── */
+::selection {
+  background: var(--accent);
+  color: var(--void);
+}
+
+
+/* ============================================================
+   5. BRAND MARK & LOGO
+   ============================================================ */
+
+#brand {
+  position: fixed;
+  top: clamp(0.65rem, 1.3vh, 1rem);
+  left: clamp(0.9rem, 2.2vw, 1.6rem);
+  z-index: var(--z-ui);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 3×3 pixel grid mark */
+.bm {
+  display: grid;
+  grid-template-columns: repeat(3, 7px);
+  grid-template-rows: repeat(3, 7px);
+  gap: 1px;
+  transform-style: preserve-3d;
+  animation: bfloat 14s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* Dim cells (rows 1 & 3) */
+.bsc {
+  background: rgba(221, 230, 245, 0.12);
+}
+
+/* Lit cells (row 2 — accent bar) */
+.bsc[data-r="2"] {
+  background: var(--accent);
+  box-shadow: 0 0 5px var(--accent-glow);
+  animation: scidle 2.8s ease-in-out infinite;
+}
+
+/* Brand text lockup */
+.btxt {
+  border-left: var(--hr) solid rgba(255, 255, 255, 0.10);
+  padding-left: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.bname {
+  font-family: var(--font-b);
+  font-weight: 800;
+  font-size: clamp(0.48rem, 0.95vw, 0.64rem);
+  letter-spacing: 0.22em;
+  color: var(--tx);
+  text-transform: uppercase;
+}
+
+.bsub {
+  font-family: var(--font-m);
+  font-size: clamp(0.32rem, 0.62vw, 0.42rem);
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   6. HUD — SLIDE COUNTER & PROGRESS BAR
+   ============================================================ */
+
+#hud {
+  position: fixed;
+  top: 0.9rem;
+  right: clamp(0.9rem, 3vw, 1.8rem);
+  z-index: var(--z-ui);
+  text-align: right;
+  font-family: var(--font-m);
+  font-size: clamp(0.5rem, 1vw, 0.62rem);
+  letter-spacing: 0.2em;
+  color: var(--tx3);
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+#hud-sl {
+  color: var(--accent);
+}
+
+/* Progress bar track */
+.pb {
+  width: clamp(4.5rem, 9vw, 7.5rem);
+  height: var(--hr);
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+/* Progress bar fill */
+.pf {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.32s ease;
+}
+
+
+/* ============================================================
+   7. SCENE STRIP — SLIDE DOT NAVIGATION
+   ============================================================ */
+
+#scene-strip {
+  position: fixed;
+  left: clamp(0.8rem, 1.8vw, 1.4rem);
+  top: 50%;
+  translate: -50% -50%;
+  z-index: var(--z-ui);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1.1vh, 0.8rem);
+}
+
+.sdot {
+  display: block;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: background 0.3s, scale 0.3s;
+  position: relative;
+}
+
+/* Larger click target */
+.sdot::before {
+  content: "";
+  position: absolute;
+  inset: -0.35rem;
+}
+
+.sdot.act {
+  background: var(--accent);
+  scale: 1.9;
+}
+
+
+/* ============================================================
+   8. NAV BAR — PREV / NEXT BUTTONS
+   ============================================================ */
+
+#nav {
+  position: fixed;
+  bottom: clamp(0.65rem, 1.8vh, 1.1rem);
+  left: 50%;
+  translate: -50% 0;
+  z-index: var(--z-ui);
+  display: flex;
+  align-items: center;
+  gap: clamp(0.55rem, 1.8vw, 1.1rem);
+}
+
+.nb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: clamp(0.42rem, 0.9vh, 0.6rem) clamp(0.7rem, 1.8vw, 1.1rem);
+  border: var(--hr) solid rgba(255, 255, 255, 0.10);
+  background: rgba(11, 15, 30, 0.90);
+  backdrop-filter: blur(10px);
+  color: var(--tx2);
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.9vw, 0.6rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.nb:hover:not(:disabled) {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.nb:disabled {
+  opacity: 0.18;
+  cursor: default;
+}
+
+/* Primary / active next button state */
+.nb.prime {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(245, 200, 66, 0.06);
+}
+
+.nb svg {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+#sl-ctr {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.85vw, 0.58rem);
+  letter-spacing: 0.22em;
+  color: var(--tx3);
+}
+
+
+/* ============================================================
+   9. SLIDE ENGINE — CONTAINER & TRANSITIONS
+   ============================================================ */
+
+#slides {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--pt) var(--px) var(--pb);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s ease, transform 0.32s ease;
+  transform: translateX(28px);
+}
+
+.slide::-webkit-scrollbar {
+  display: none;
+}
+
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+
+.slide.exit-l {
+  opacity: 0;
+  transform: translateX(-28px);
+}
+
+.slide.exit-r {
+  opacity: 0;
+  transform: translateX(28px);
+}
+
+/* Background glyph watermark per slide */
+.sg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-d);
+  font-size: min(55vw, 52vh);
+  color: var(--accent);
+  opacity: 0.025;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  z-index: 0;
+}
+
+/* Slide inner — content layer sits above watermark */
+.si {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+
+/* ============================================================
+   10. TYPOGRAPHY — LABELS, RULES, HEADINGS, BODY
+   ============================================================ */
+
+/* Accent rule — horizontal bar above section labels */
+.rule {
+  width: clamp(1.8rem, 4vw, 3rem);
+  height: var(--hr);
+  background: var(--accent);
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.65rem);
+}
+
+/* Section label with leading dot */
+.lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.52rem, 0.95vw, 0.7rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.65rem);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lbl::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* Green label variant */
+.lbl.g {
+  color: var(--green);
+}
+
+/* Display heading — H1 */
+h1, .h1 {
+  font-family: var(--font-d);
+  font-size: clamp(2.6rem, 7.5vw + 0.8vh, 7rem);
+  line-height: 0.87;
+  letter-spacing: 0.03em;
+  font-weight: 400;
+  margin-bottom: clamp(0.45rem, 1.3vh, 0.9rem);
+}
+
+/* Display heading — H2 */
+h2, .h2 {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 5vw + 0.5vh, 5rem);
+  line-height: 0.88;
+  letter-spacing: 0.03em;
+  font-weight: 400;
+  margin-bottom: clamp(0.35rem, 0.9vh, 0.75rem);
+}
+
+/* Body paragraph text */
+.body {
+  font-size: clamp(0.78rem, 1.3vw, 1rem);
+  line-height: 1.78;
+  color: rgba(221, 230, 245, 0.64);
+}
+
+.body strong {
+  color: var(--tx);
+  font-weight: 500;
+}
+
+/* Inline accent color span */
+.accent {
+  color: var(--accent);
+}
+
+/* Rank item — dot + label row */
+.rk {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-size: clamp(0.56rem, 0.95vw, 0.74rem);
+  color: var(--tx2);
+}
+
+.rk-dot {
+  width: clamp(8px, 1.4vw, 11px);
+  height: clamp(8px, 1.4vw, 11px);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   11. INFO BOX — .ibox
+   ============================================================ */
+
+.ibox {
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  padding: clamp(0.7rem, 1.8vh, 1.1rem) clamp(0.85rem, 1.8vw, 1.3rem);
+  margin-bottom: var(--gap);
+}
+
+.ibox-lbl {
+  font-size: clamp(0.48rem, 0.82vw, 0.64rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.25rem, 0.7vh, 0.5rem);
+}
+
+.ibox-txt {
+  font-size: clamp(0.72rem, 1.25vw, 0.96rem);
+  line-height: 1.72;
+  color: rgba(221, 230, 245, 0.74);
+}
+
+.ibox-txt strong {
+  color: var(--tx);
+  font-weight: 500;
+}
+
+
+/* ============================================================
+   12. AGENDA LAYOUT — .ag-grid / .ag-row
+   ============================================================ */
+
+.ag-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--gap2);
+  flex: 1;
+  min-height: 0;
+}
+
+.ag-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.55rem, 1.4vw, 0.9rem);
+  padding: clamp(0.5rem, 1.1vh, 0.8rem) 0;
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+}
+
+/* Time column */
+.ag-t {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  min-width: clamp(36px, 6vw, 50px);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Content column */
+.ag-c {
+  font-size: clamp(0.68rem, 1.15vw, 0.9rem);
+  color: rgba(221, 230, 245, 0.70);
+  line-height: 1.4;
+}
+
+.ag-c strong {
+  color: var(--tx);
+  display: block;
+  font-size: clamp(0.75rem, 1.28vw, 0.97rem);
+  font-weight: 500;
+  margin-bottom: 1px;
+}
+
+
+/* ============================================================
+   13. ESSENTIAL QUESTION — .eq-banner / .eq-big
+   ============================================================ */
+
+/* Compact footer strip version */
+.eq-banner {
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding-top: clamp(0.45rem, 1.2vh, 0.8rem);
+  margin-top: auto;
+}
+
+.eq-tag {
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.56rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.3rem;
+}
+
+.eq-q {
+  font-size: clamp(0.72rem, 1.2vw, 0.94rem);
+  color: rgba(221, 230, 245, 0.58);
+  line-height: 1.6;
+}
+
+/* Full-slide essential question box */
+.eq-big {
+  border: var(--hr) solid rgba(245, 200, 66, 0.22);
+  background: rgba(245, 200, 66, 0.04);
+  padding: clamp(0.9rem, 2.5vh, 1.8rem) clamp(1.1rem, 2.8vw, 1.9rem);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eq-big-txt {
+  font-size: clamp(0.85rem, 1.75vw, 1.38rem);
+  color: var(--tx);
+  line-height: 1.78;
+}
+
+.eq-big-txt strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* Submission instruction footnote */
+.eq-note {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.6rem);
+  color: rgba(255, 255, 255, 0.20);
+  letter-spacing: 0.12em;
+  margin-top: auto;
+  padding-top: clamp(0.45rem, 1.1vh, 0.75rem);
+}
+
+
+/* ============================================================
+   14. CLO BOX — .clo-box / .sc-row
+   ============================================================ */
+
+/* CLO box — yellow (D01 / D02) */
+.clo-box {
+  border: var(--hr) solid rgba(245, 200, 66, 0.20);
+  background: rgba(245, 200, 66, 0.04);
+  padding: clamp(0.65rem, 1.5vh, 1rem) clamp(0.8rem, 1.8vw, 1.25rem);
+  margin-bottom: var(--gap);
+}
+
+/* CLO box — blue variant */
+.clo-box.b {
+  border-color: rgba(56, 189, 248, 0.20);
+  background: rgba(56, 189, 248, 0.04);
+}
+
+/* CLO box — green variant (D03) */
+.clo-box.g {
+  border-color: rgba(62, 255, 160, 0.20);
+  background: rgba(62, 255, 160, 0.04);
+}
+
+/* CLO box — purple variant (D03) */
+.clo-box.p {
+  border-color: rgba(192, 132, 252, 0.20);
+  background: rgba(192, 132, 252, 0.04);
+}
+
+.clo-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.56rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.22rem, 0.58vh, 0.4rem);
+}
+
+.clo-lbl.y  { color: rgba(245, 200, 66, 0.60); }
+.clo-lbl.b  { color: rgba(56, 189, 248, 0.60); }
+.clo-lbl.g  { color: rgba(62, 255, 160, 0.60); }
+.clo-lbl.p  { color: rgba(192, 132, 252, 0.60); }
+
+.clo-txt {
+  font-size: clamp(0.76rem, 1.28vw, 0.98rem);
+  color: var(--tx);
+  line-height: 1.56;
+}
+
+/* Success criteria row */
+.sc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.45rem, 1.1vw, 0.8rem);
+  padding: clamp(0.38rem, 0.9vh, 0.6rem) 0;
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  font-size: clamp(0.64rem, 1.08vw, 0.84rem);
+  color: rgba(221, 230, 245, 0.62);
+  line-height: 1.48;
+}
+
+.sc-n {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.59rem);
+  color: var(--accent);
+  letter-spacing: 0.14em;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.sc-n em {
+  color: var(--tx3);
+  font-style: normal;
+}
+
+
+/* ============================================================
+   15. ELEMENT BOX — STANDARD & JUMBO + ALL CATEGORY CLASSES
+   ============================================================ */
+
+/* ── Standard element box ── */
+.el-box {
+  border: 1px solid;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding:
+    clamp(0.5rem, 1.1vw, 0.9rem)
+    clamp(0.5rem, 0.95vw, 0.85rem)
+    clamp(0.4rem, 0.85vw, 0.72rem);
+  min-width: clamp(70px, 12vw, 110px);
+}
+
+.el-an {
+  font-family: var(--font-m);
+  font-size: clamp(0.52rem, 0.95vw, 0.78rem);
+  align-self: flex-start;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.el-sym {
+  font-family: var(--font-d);
+  font-size: clamp(2rem, 4.8vw, 4.2rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.el-nm {
+  font-size: clamp(0.44rem, 0.78vw, 0.62rem);
+  color: rgba(221, 230, 245, 0.50);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.el-am {
+  font-size: clamp(0.38rem, 0.68vw, 0.54rem);
+  color: rgba(221, 230, 245, 0.30);
+  text-align: center;
+}
+
+/* ── Jumbo element box — used on S4 interactive callout slide ── */
+.el-box.jumbo {
+  min-width: clamp(95px, 14vw, 145px);
+}
+
+.el-box.jumbo .el-an  { font-size: clamp(0.75rem, 1.4vw, 1.05rem); }
+.el-box.jumbo .el-sym { font-size: clamp(2.8rem, 7.5vw, 6.2rem); }
+.el-box.jumbo .el-nm  { font-size: clamp(0.58rem, 1.05vw, 0.82rem); }
+.el-box.jumbo .el-am  { font-size: clamp(0.48rem, 0.88vw, 0.68rem); }
+
+/* ── Category — Alkali Metal ── */
+.z-alkali {
+  border-color: var(--c-alkali);
+  background: rgba(239, 68, 68, 0.10);
+}
+.z-alkali .el-an,
+.z-alkali .el-sym { color: var(--c-alkali); }
+
+/* ── Category — Alkaline Earth Metal ── */
+.z-alkaline {
+  border-color: var(--c-alkaline);
+  background: rgba(249, 115, 22, 0.10);
+}
+.z-alkaline .el-an,
+.z-alkaline .el-sym { color: var(--c-alkaline); }
+
+/* ── Category — Transition Metal ── */
+.z-transition {
+  border-color: var(--c-transition);
+  background: rgba(234, 179, 8, 0.10);
+}
+.z-transition .el-an,
+.z-transition .el-sym { color: var(--c-transition); }
+
+/* ── Category — Post-Transition Metal ── */
+.z-post {
+  border-color: var(--c-post);
+  background: rgba(34, 197, 94, 0.10);
+}
+.z-post .el-an,
+.z-post .el-sym { color: var(--c-post); }
+
+/* ── Category — Metalloid ── */
+.z-metalloid {
+  border-color: var(--c-metalloid);
+  background: rgba(20, 184, 166, 0.10);
+}
+.z-metalloid .el-an,
+.z-metalloid .el-sym { color: var(--c-metalloid); }
+
+/* ── Category — Reactive Nonmetal ── */
+.z-nonmetal {
+  border-color: var(--c-nonmetal);
+  background: rgba(59, 130, 246, 0.10);
+}
+.z-nonmetal .el-an,
+.z-nonmetal .el-sym { color: var(--c-nonmetal); }
+
+/* ── Category — Halogen ── */
+.z-halogen {
+  border-color: var(--c-halogen);
+  background: rgba(139, 92, 246, 0.10);
+}
+.z-halogen .el-an,
+.z-halogen .el-sym { color: var(--c-halogen); }
+
+/* ── Category — Noble Gas ── */
+.z-noble {
+  border-color: var(--c-noble);
+  background: rgba(168, 85, 247, 0.10);
+}
+.z-noble .el-an,
+.z-noble .el-sym { color: var(--c-noble); }
+
+/* ── Category — Lanthanide ── */
+.z-lanthanide {
+  border-color: var(--c-lanthanide);
+  background: rgba(236, 72, 153, 0.10);
+}
+.z-lanthanide .el-an,
+.z-lanthanide .el-sym { color: var(--c-lanthanide); }
+
+/* ── Category — Actinide ── */
+.z-actinide {
+  border-color: var(--c-actinide);
+  background: rgba(244, 63, 94, 0.10);
+}
+.z-actinide .el-an,
+.z-actinide .el-sym { color: var(--c-actinide); }
+
+/* ── Category — Unknown ── */
+.z-unknown {
+  border-color: var(--c-unknown);
+  background: rgba(100, 116, 139, 0.10);
+}
+.z-unknown .el-an,
+.z-unknown .el-sym { color: var(--c-unknown); }
+
+
+/* ============================================================
+   16. ELEMENT BOX — INTERACTIVE CALLOUT GLOW STATES (S4)
+   ============================================================ */
+
+/* Base glow-capable elements — transition applied */
+.el-box.jumbo .el-an.glow,
+.el-box.jumbo .el-sym.glow,
+.el-box.jumbo .el-nm.glow,
+.el-box.jumbo .el-am.glow {
+  transition: text-shadow 0.3s;
+}
+
+/* Active glow states — triggered by JS highlightPart() */
+.el-box.jumbo .el-an.glow-active {
+  text-shadow: 0 0 10px currentColor;
+}
+
+.el-box.jumbo .el-sym.glow-active {
+  text-shadow: 0 0 16px currentColor, 0 0 32px currentColor;
+}
+
+.el-box.jumbo .el-nm.glow-active {
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.80);
+  color: var(--blue) !important;
+}
+
+.el-box.jumbo .el-am.glow-active {
+  text-shadow: 0 0 8px rgba(62, 255, 160, 0.80);
+  color: var(--green) !important;
+}
+
+
+/* ============================================================
+   17. FLIP CARDS — ELEMENT CARDS (D01 S2 STYLE)
+   ============================================================ */
+
+.flip-gallery {
+  display: flex;
+  gap: clamp(8px, 1.4vw, 14px);
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: clamp(0.5rem, 1.5vh, 1rem) 0;
+}
+
+.flip-card {
+  perspective: 900px;
+  cursor: pointer;
+  flex: 1;
+  min-width: clamp(82px, 11vw, 144px);
+  max-width: clamp(120px, 16vw, 188px);
+  height: clamp(115px, 20vh, 210px);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Inner container — flipped via JS .flipped class */
+.fci {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card.flipped .fci {
+  transform: rotateY(180deg);
+}
+
+/* Both faces — front and back */
+.ff {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(0.45rem, 1vw, 0.85rem);
+  overflow: hidden;
+}
+
+/* Back face base */
+.ff.back {
+  transform: rotateY(180deg);
+}
+
+/* Hover lift — only applies before flip */
+.flip-card:hover .fci:not(:is(.flipped *)) {
+  transform: translateY(-3px) rotateX(3deg);
+}
+
+/* Hover while flipped */
+.flip-card.flipped:hover .fci {
+  transform: rotateY(180deg) translateY(-3px) rotateX(-3deg);
+}
+
+/* Front face content */
+.ff-an {
+  font-family: var(--font-m);
+  font-size: clamp(0.55rem, 0.95vw, 0.8rem);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.ff-sym {
+  font-family: var(--font-d);
+  font-size: clamp(2.3rem, 5.5vw, 4.8rem);
+  line-height: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+}
+
+.ff-mass {
+  font-family: var(--font-m);
+  font-size: clamp(0.4rem, 0.68vw, 0.55rem);
+  text-align: center;
+  color: rgba(221, 230, 245, 0.35);
+}
+
+.ff-hint {
+  font-size: clamp(0.35rem, 0.58vw, 0.48rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 3px;
+  color: rgba(221, 230, 245, 0.28);
+}
+
+/* Back face content */
+.fb-top {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: auto;
+}
+
+.fb-name {
+  font-family: var(--font-d);
+  font-size: clamp(1.1rem, 2.8vw, 2.1rem);
+  line-height: 1.05;
+  font-weight: 400;
+}
+
+.fb-cat {
+  font-size: clamp(0.42rem, 0.72vw, 0.58rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  margin-bottom: clamp(5px, 0.8vh, 8px);
+}
+
+.fb-fact {
+  font-size: clamp(0.52rem, 0.88vw, 0.72rem);
+  color: rgba(221, 230, 245, 0.68);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.fb-meta {
+  font-family: var(--font-m);
+  font-size: clamp(0.38rem, 0.65vw, 0.52rem);
+  color: rgba(221, 230, 245, 0.35);
+  margin-top: auto;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Flip progress indicator */
+.flip-status {
+  font-family: var(--font-m);
+  font-size: clamp(0.5rem, 0.85vw, 0.65rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-top: clamp(0.3rem, 0.8vh, 0.55rem);
+  transition: color 0.3s;
+}
+
+.flip-status.done {
+  color: var(--green);
+}
+
+
+/* ============================================================
+   18. FLIP CARDS — FAMILY CARDS (D02 STYLE)
+   ============================================================ */
+
+.family-gallery {
+  display: flex;
+  gap: clamp(8px, 1.4vw, 14px);
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: clamp(0.4rem, 1.2vh, 0.85rem) 0;
+}
+
+.fam-card {
+  perspective: 900px;
+  cursor: pointer;
+  flex: 1;
+  min-width: clamp(100px, 14vw, 170px);
+  max-width: clamp(155px, 20vw, 220px);
+  height: clamp(140px, 24vh, 240px);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.fam-card.flipped .fci {
+  transform: rotateY(180deg);
+}
+
+.fam-card:hover .fci:not(:is(.flipped ~ *)) {
+  transform: translateY(-3px) rotateX(2deg);
+}
+
+.fam-card.flipped:hover .fci {
+  transform: rotateY(180deg) translateY(-3px);
+}
+
+/* Family card front content */
+.ff-group {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.6rem);
+  letter-spacing: 0.14em;
+  color: rgba(221, 230, 245, 0.35);
+  margin-bottom: 3px;
+}
+
+.ff-fname {
+  font-family: var(--font-d);
+  font-size: clamp(1.2rem, 2.8vw, 2.2rem);
+  line-height: 0.95;
+  font-weight: 400;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.ff-examples {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.ff-ex-el {
+  font-family: var(--font-d);
+  font-size: clamp(0.9rem, 1.8vw, 1.5rem);
+  line-height: 1;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* Family card back content */
+.fb-ve {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: clamp(5px, 0.8vh, 8px);
+}
+
+.fb-ve-num {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.fb-ve-lbl {
+  font-size: clamp(0.42rem, 0.7vw, 0.58rem);
+  color: rgba(221, 230, 245, 0.45);
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+
+.fb-trait {
+  font-size: clamp(0.5rem, 0.85vw, 0.68rem);
+  color: rgba(221, 230, 245, 0.68);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.fb-real {
+  font-family: var(--font-m);
+  font-size: clamp(0.38rem, 0.65vw, 0.52rem);
+  color: rgba(221, 230, 245, 0.35);
+  margin-top: auto;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Family flip count indicator */
+.fam-flip-status {
+  font-family: var(--font-m);
+  font-size: clamp(0.5rem, 0.85vw, 0.65rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-top: clamp(0.3rem, 0.8vh, 0.55rem);
+  transition: color 0.3s;
+}
+
+.fam-flip-status.done {
+  color: var(--green);
+}
+
+
+/* ============================================================
+   19. FULL PERIODIC TABLE — GRID, CELLS, TOOLBAR, INFO PANEL
+   ============================================================ */
+
+/* Outer layout wrapper */
+.pt-slide-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: clamp(6px, 1vh, 10px);
+}
+
+/* ── Toolbar ── */
+.pt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.tb-btn {
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.58rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: var(--hr) solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--tx2);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.18s;
+}
+
+.tb-btn:hover {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.tb-btn.act {
+  border-color: var(--accent);
+  background: rgba(245, 200, 66, 0.08);
+  color: var(--accent);
+}
+
+/* ── Main area — table + info panel ── */
+.pt-main-area {
+  display: flex;
+  gap: clamp(6px, 1vw, 10px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pt-table-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Main grid (rows 1–7) ── */
+.pt-grid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 2px;
+}
+
+/* ── F-block rows (lanthanides / actinides) ── */
+.pt-fgrid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 2px;
+}
+
+/* Spacer between main grid and f-block rows */
+.pt-spacer {
+  height: clamp(2px, 0.4vh, 5px);
+}
+
+/* ── Individual cell ── */
+.pt-cell {
+  border: 1px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.1s, filter 0.18s, border-color 0.18s;
+  border-radius: 1px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  min-width: 0;
+}
+
+.pt-cell:hover {
+  transform: scale(1.12);
+  z-index: 2;
+  border-color: rgba(255, 255, 255, 0.40) !important;
+}
+
+.pt-cell.selected {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  z-index: 3;
+}
+
+/* Dimmed state (during filter — non-matching elements) */
+.pt-cell.dim {
+  filter: brightness(0.22) saturate(0.4);
+}
+
+/* Highlighted state (during filter — matching elements) */
+.pt-cell.hl {
+  filter: brightness(1.18);
+  outline: 2px solid rgba(245, 200, 66, 0.50);
+  outline-offset: -1px;
+}
+
+/* Cell inner content */
+.pt-an {
+  font-family: var(--font-m);
+  font-size: clamp(4px, 0.52vw, 8.5px);
+  line-height: 1;
+  align-self: flex-start;
+  padding: 2px 2px 0;
+}
+
+.pt-sym {
+  font-family: var(--font-d);
+  font-size: clamp(6px, 0.95vw, 16px);
+  line-height: 1;
+  font-weight: 400;
+}
+
+/* Empty gap cells */
+.pt-gap {
+  aspect-ratio: 1;
+  border: 1px solid transparent;
+}
+
+/* 57–71 / 89–103 placeholder cells */
+.pt-placeholder {
+  aspect-ratio: 1;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-m);
+  font-size: clamp(4px, 0.5vw, 7px);
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.06em;
+  border-radius: 1px;
+}
+
+/* ── Element Info Panel (right sidebar) ── */
+.el-panel {
+  width: clamp(140px, 20vw, 220px);
+  flex-shrink: 0;
+  border: var(--hr) solid rgba(255, 255, 255, 0.10);
+  background: rgba(11, 15, 30, 0.85);
+  backdrop-filter: blur(8px);
+  padding: clamp(0.6rem, 1.4vw, 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.35rem, 0.8vh, 0.6rem);
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+.el-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ep-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  color: var(--tx3);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+}
+
+.ep-close:hover {
+  color: var(--tx);
+}
+
+.ep-box {
+  border: 1px solid;
+  padding: clamp(0.5rem, 0.9vw, 0.8rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: clamp(0.3rem, 0.6vh, 0.5rem);
+}
+
+.ep-an-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.75vw, 0.6rem);
+  align-self: flex-start;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.ep-sym {
+  font-family: var(--font-d);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.ep-name {
+  font-size: clamp(0.62rem, 1.05vw, 0.82rem);
+  color: rgba(221, 230, 245, 0.65);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.ep-mass {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.6rem);
+  color: rgba(221, 230, 245, 0.38);
+}
+
+.ep-row {
+  display: flex;
+  gap: 0.45rem;
+  font-size: clamp(0.48rem, 0.82vw, 0.64rem);
+}
+
+.ep-key { color: var(--tx3); flex-shrink: 0; }
+.ep-val { color: var(--tx); }
+
+.ep-fact {
+  font-size: clamp(0.5rem, 0.85vw, 0.65rem);
+  color: rgba(221, 230, 245, 0.58);
+  line-height: 1.55;
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.08);
+  padding-top: clamp(0.3rem, 0.6vh, 0.5rem);
+  margin-top: auto;
+}
+
+.ep-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--tx3);
+  font-size: clamp(0.55rem, 0.9vw, 0.7rem);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   20. REGION MAP — MINI PT REGION COLOR OVERLAY
+   ============================================================ */
+
+.tr-layout {
+  display: flex;
+  gap: var(--gap2);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tr-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tr-map-wrap {
+  flex-shrink: 0;
+  min-width: clamp(155px, 25vw, 235px);
+  display: flex;
+  flex-direction: column;
+}
+
+.rm-grid {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 2px;
+}
+
+.rm-cell {
+  aspect-ratio: 1;
+  border-radius: 1px;
+}
+
+
+/* ============================================================
+   21. SHELL BUILDER — SVG DIAGRAM + CONTROLS + INFO PANEL (D02)
+   ============================================================ */
+
+.shell-layout {
+  display: flex;
+  gap: var(--gap2);
+  align-items: flex-start;
+  flex: 1;
+  min-height: 0;
+  flex-wrap: wrap;
+}
+
+/* Left: element button list */
+.shell-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex-shrink: 0;
+  min-width: clamp(140px, 20vw, 200px);
+}
+
+.shell-ctrl-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-bottom: 0.2rem;
+}
+
+.shell-btn {
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: clamp(0.35rem, 0.7vw, 0.55rem) clamp(0.5rem, 0.9vw, 0.75rem);
+  cursor: pointer;
+  font-family: var(--font-m);
+  font-size: clamp(0.55rem, 0.95vw, 0.72rem);
+  color: var(--tx2);
+  background: rgba(255, 255, 255, 0.018);
+  transition: all 0.18s;
+}
+
+.shell-btn:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--tx);
+}
+
+.shell-btn.active {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.shell-btn .sb-sym {
+  font-family: var(--font-d);
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  line-height: 1;
+  font-weight: 400;
+  min-width: 28px;
+  text-align: center;
+}
+
+.shell-btn .sb-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.shell-btn .sb-name { font-size: clamp(0.5rem, 0.85vw, 0.65rem); }
+.shell-btn .sb-an   { font-size: clamp(0.42rem, 0.72vw, 0.55rem); color: var(--tx3); }
+
+/* Center: SVG shell diagram */
+.shell-diagram-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: clamp(200px, 35vw, 340px);
+}
+
+#shell-svg {
+  width: clamp(200px, min(38vw, 42vh), 340px);
+  height: clamp(200px, min(38vw, 42vh), 340px);
+  overflow: visible;
+}
+
+/* SVG shell ring and electron dot */
+.shell-ring {
+  fill: none;
+  stroke-dasharray: 4 3;
+  opacity: 0.35;
+  transition: opacity 0.3s, stroke 0.3s;
+}
+
+.shell-ring.active { opacity: 0.7; }
+
+.e-dot { transition: opacity 0.4s, r 0.3s; }
+.e-dot.valence { filter: drop-shadow(0 0 3px currentColor); }
+
+/* Right: info panel */
+.shell-info-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: clamp(140px, 20vw, 220px);
+}
+
+.sip-row {
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.38rem, 0.8vh, 0.6rem) 0;
+}
+
+.sip-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.sip-key {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.6rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-bottom: 0.2rem;
+}
+
+.sip-val {
+  font-size: clamp(0.68rem, 1.15vw, 0.9rem);
+  color: var(--tx);
+  line-height: 1.5;
+}
+
+.sip-val em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+
+/* ============================================================
+   22. BOND BUILDER — D03 IONIC / COVALENT INTERACTIVE
+   ============================================================ */
+
+.bond-builder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Pair selector buttons */
+.bb-pairs {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.bb-pair-btn {
+  border: 1px solid;
+  padding: clamp(0.38rem, 0.8vw, 0.62rem) clamp(0.55rem, 1.1vw, 0.88rem);
+  cursor: pointer;
+  font-family: var(--font-m);
+  font-size: clamp(0.5rem, 0.88vw, 0.68rem);
+  color: var(--tx2);
+  background: rgba(255, 255, 255, 0.018);
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.bb-pair-btn:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--tx);
+}
+
+.bb-pair-btn.active-ionic {
+  border-color: var(--ionic);
+  background: rgba(62, 255, 160, 0.08);
+  color: var(--ionic);
+}
+
+.bb-pair-btn.active-covalent {
+  border-color: var(--covalent);
+  background: rgba(192, 132, 252, 0.08);
+  color: var(--covalent);
+}
+
+.bb-sym {
+  font-family: var(--font-d);
+  font-size: clamp(0.9rem, 1.8vw, 1.4rem);
+  line-height: 1;
+}
+
+/* Stage — atom diagrams + arrow + result */
+.bb-stage {
+  flex: 1;
+  display: flex;
+  gap: var(--gap2);
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  flex-wrap: wrap;
+}
+
+.bb-atom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.bb-atom-label {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.bb-atom-box {
+  position: relative;
+  width: clamp(100px, 18vw, 160px);
+  height: clamp(100px, 18vw, 160px);
+}
+
+.bb-atom-box svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Center arrow */
+.bb-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 clamp(0.5rem, 1vw, 0.85rem);
+}
+
+.bb-arrow-icon {
+  font-family: var(--font-d);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  color: var(--tx3);
+  line-height: 1;
+}
+
+.bb-arrow-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.56rem);
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Result compound display */
+.bb-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bb-result-formula {
+  font-family: var(--font-d);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1;
+  text-align: center;
+}
+
+.bb-result-name {
+  font-family: var(--font-m);
+  font-size: clamp(0.5rem, 0.88vw, 0.68rem);
+  color: var(--tx2);
+  letter-spacing: 0.08em;
+}
+
+.bb-result-type {
+  font-size: clamp(0.42rem, 0.72vw, 0.56rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Info rows panel */
+.bb-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: clamp(140px, 22vw, 200px);
+}
+
+.bb-info-row {
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.3rem, 0.7vh, 0.52rem) 0;
+}
+
+.bb-info-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.bb-info-key {
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.56rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-bottom: 0.15rem;
+}
+
+.bb-info-val {
+  font-size: clamp(0.62rem, 1.05vw, 0.82rem);
+  color: var(--tx);
+  line-height: 1.45;
+}
+
+
+/* ============================================================
+   23. REVIEW CARDS — D03 CLICK-TO-REVEAL GRID
+   ============================================================ */
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  flex: 1;
+  min-height: 0;
+}
+
+.review-card {
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.022);
+  padding: clamp(0.7rem, 1.8vh, 1.1rem) clamp(0.85rem, 1.8vw, 1.3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.review-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.review-card.revealed {
+  border-color: rgba(62, 255, 160, 0.25);
+  background: rgba(62, 255, 160, 0.04);
+}
+
+/* Question text */
+.rc-q {
+  font-size: clamp(0.62rem, 1.05vw, 0.82rem);
+  color: var(--tx2);
+  line-height: 1.55;
+  flex: 1;
+}
+
+/* Answer text — hidden until .revealed */
+.rc-a {
+  font-size: clamp(0.68rem, 1.15vw, 0.9rem);
+  color: var(--green);
+  line-height: 1.5;
+  display: none;
+}
+
+.review-card.revealed .rc-a {
+  display: block;
+}
+
+/* "click to reveal" hint */
+.rc-hint {
+  font-family: var(--font-m);
+  font-size: clamp(0.4rem, 0.65vw, 0.52rem);
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: auto;
+}
+
+.review-card.revealed .rc-hint {
+  display: none;
+}
+
+
+/* ============================================================
+   24. PERIODIC TRENDS — D02 TREND VISUALIZATION CARDS
+   ============================================================ */
+
+.trend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap2);
+  flex: 1;
+  min-height: 0;
+}
+
+.trend-card {
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.022);
+  padding: clamp(0.75rem, 1.8vh, 1.2rem) clamp(0.85rem, 1.8vw, 1.3rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.trend-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.2rem, 2.8vw, 2rem);
+  line-height: 0.95;
+  font-weight: 400;
+}
+
+.trend-arrow-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 0.5rem;
+}
+
+.trend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.trend-el-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.trend-el-mini {
+  font-family: var(--font-d);
+  font-size: clamp(0.9rem, 1.8vw, 1.4rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.trend-arrow {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-m);
+  font-size: clamp(0.42rem, 0.72vw, 0.55rem);
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+}
+
+.t-arrow-bar {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  position: relative;
+  overflow: visible;
+}
+
+.t-arrow-bar::after {
+  content: "▶";
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 8px;
+}
+
+.trend-note {
+  font-size: clamp(0.58rem, 1vw, 0.78rem);
+  color: rgba(221, 230, 245, 0.55);
+  line-height: 1.55;
+  margin-top: auto;
+}
+
+
+/* ============================================================
+   25. IONIC vs COVALENT COMPARE GRID — D03
+   ============================================================ */
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap2);
+  flex: 1;
+  min-height: 0;
+}
+
+.compare-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.compare-header {
+  font-family: var(--font-d);
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  line-height: 0.95;
+  font-weight: 400;
+}
+
+.compare-sub {
+  font-family: var(--font-m);
+  font-size: clamp(0.45rem, 0.78vw, 0.6rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.compare-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.35rem, 0.9vh, 0.6rem) 0;
+}
+
+.compare-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.cr-icon {
+  font-size: clamp(0.8rem, 1.4vw, 1.1rem);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 0.1rem;
+}
+
+.cr-text {
+  font-size: clamp(0.62rem, 1.05vw, 0.82rem);
+  color: rgba(221, 230, 245, 0.72);
+  line-height: 1.5;
+}
+
+.cr-text strong {
+  color: var(--tx);
+  font-weight: 500;
+}
+
+
+/* ============================================================
+   26. GAME COMPONENTS — BANK, TILE, ZONE, MINI-EL, SCORES
+   ============================================================ */
+
+/* Token bank row */
+.bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+/* ── Element tile (clickable chip) ── */
+.tile {
+  border: 1px solid;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding:
+    clamp(0.38rem, 0.82vw, 0.6rem)
+    clamp(0.38rem, 0.75vw, 0.55rem)
+    clamp(0.32rem, 0.68vw, 0.5rem);
+  min-width: clamp(56px, 8.5vw, 78px);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s, opacity 0.2s;
+}
+
+.tile:hover:not(.placed) {
+  transform: translateY(-2px);
+}
+
+.tile.sel {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tile.placed {
+  opacity: 0.20;
+  pointer-events: none;
+}
+
+.t-an {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  align-self: flex-start;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+.t-sym {
+  font-family: var(--font-d);
+  font-size: clamp(1rem, 2.4vw, 1.85rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.t-nm {
+  font-size: clamp(0.38rem, 0.62vw, 0.52rem);
+  color: rgba(221, 230, 245, 0.40);
+  text-align: center;
+  margin-top: 1px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ── Property text tile (D02 games) ── */
+.prop-tile {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.025);
+  padding: clamp(0.38rem, 0.8vw, 0.6rem) clamp(0.55rem, 1.1vw, 0.85rem);
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--font-m);
+  font-size: clamp(0.55rem, 0.92vw, 0.72rem);
+  color: var(--tx2);
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+
+.prop-tile:hover:not(.placed) {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--tx);
+}
+
+/* ── Label tile (D03 games) ── */
+.label-tile {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  padding: clamp(0.38rem, 0.8vw, 0.6rem) clamp(0.55rem, 1.1vw, 0.88rem);
+  cursor: pointer;
+  font-family: var(--font-m);
+  font-size: clamp(0.52rem, 0.9vw, 0.7rem);
+  color: var(--tx2);
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.label-tile:hover:not(.placed) {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--tx);
+}
+
+.label-tile.sel {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  color: var(--accent);
+  border-color: var(--accent-line);
+}
+
+.label-tile.placed {
+  opacity: 0.20;
+  pointer-events: none;
+}
+
+/* ── Drop zone ── */
+.zone {
+  border: 1px dashed rgba(255, 255, 255, 0.20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  min-height: clamp(68px, 11vh, 95px);
+  padding: clamp(0.38rem, 0.7vw, 0.58rem);
+}
+
+.zone:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Correct placement state */
+.zone.ok {
+  border-style: solid;
+  border-color: var(--green);
+  background: rgba(62, 255, 160, 0.06);
+}
+
+/* Wrong placement flash */
+.zone.bad {
+  animation: zbad 0.42s ease;
+}
+
+.z-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.28);
+  text-transform: uppercase;
+}
+
+/* Active / accent zone label */
+.z-lbl.a {
+  color: var(--accent);
+  font-size: clamp(0.58rem, 0.95vw, 0.72rem);
+}
+
+/* Content row inside a zone after placement */
+.z-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 5px;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+/* ── Mini element chip — placed inside zones ── */
+.mini-el {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 5px;
+  border: 1px solid;
+  border-radius: 1px;
+}
+
+.mini-sym {
+  font-family: var(--font-d);
+  font-size: clamp(0.7rem, 1.4vw, 1.05rem);
+  line-height: 1;
+  font-weight: 400;
+}
+
+.mini-nm {
+  font-size: clamp(0.33rem, 0.52vw, 0.46rem);
+  color: rgba(221, 230, 245, 0.38);
+}
+
+/* Mini text label chip (D03 formula game) */
+.mini-label {
+  font-family: var(--font-m);
+  font-size: clamp(0.38rem, 0.62vw, 0.52rem);
+  color: rgba(221, 230, 245, 0.50);
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Score row & reset button ── */
+.g-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  margin-top: auto;
+  padding-top: var(--gap);
+  flex-shrink: 0;
+}
+
+.g-score {
+  font-family: var(--font-m);
+  font-size: clamp(0.52rem, 0.88vw, 0.68rem);
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.g-done {
+  color: var(--green) !important;
+}
+
+.reset-btn {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.8vw, 0.6rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  background: none;
+  border: var(--hr) solid rgba(255, 255, 255, 0.10);
+  padding: 0.28rem 0.65rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.50);
+}
+
+
+/* ============================================================
+   27. GAME — ROUND 1: ORDER IN THE ROW (D01 S5)
+   ============================================================ */
+
+#grid1 {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.g1-z {
+  flex: 1;
+  min-width: clamp(54px, 8vw, 75px);
+}
+
+
+/* ============================================================
+   28. GAME — ROUND 2: GROUP SORT (D01 S7)
+   ============================================================ */
+
+.g2-cols {
+  display: flex;
+  gap: var(--gap2);
+  flex: 1;
+  min-height: 0;
+}
+
+.g2-col { flex: 1; }
+
+.g2-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: var(--gap);
+}
+
+.g2-zone {
+  width: 100%;
+  min-height: clamp(95px, 17vh, 155px);
+  align-items: flex-start;
+}
+
+/* Two-bin layout (D03) */
+.two-bins {
+  display: flex;
+  gap: var(--gap2);
+}
+
+.two-bins > div { flex: 1; }
+
+.two-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: var(--gap);
+}
+
+.two-zone {
+  width: 100%;
+  min-height: clamp(85px, 14vh, 120px);
+  align-items: flex-start;
+}
+
+
+/* ============================================================
+   29. GAME — ROUND 3: METAL / NONMETAL / METALLOID (D01 S9)
+   ============================================================ */
+
+.g3-bins {
+  display: flex;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+.g3-bin {
+  flex: 1;
+  min-width: clamp(95px, 23vw, 175px);
+}
+
+.g3-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: var(--gap);
+}
+
+.g3-zone {
+  width: 100%;
+  min-height: clamp(85px, 14vh, 135px);
+  align-items: flex-start;
+}
+
+/* Match grid layout (D03 formula matching) */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--gap);
+  align-items: start;
+  flex: 1;
+}
+
+.match-col-lbl {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-bottom: var(--gap);
+}
+
+.match-slots {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.match-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.match-zone {
+  flex: 1;
+  min-height: clamp(48px, 8vh, 65px);
+}
+
+.match-zone-lbl {
+  font-family: var(--font-d);
+  font-size: clamp(0.9rem, 1.8vw, 1.4rem);
+  color: var(--tx2);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+
+/* ============================================================
+   30. INTERACTIVE CALLOUT ROWS (D01 S4)
+   ============================================================ */
+
+.callout-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.55rem, 1.4vw, 1.1rem);
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.42rem, 1.1vh, 0.75rem) 0;
+}
+
+.callout-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Clickable label button */
+.c-key {
+  font-family: var(--font-m);
+  font-size: clamp(0.48rem, 0.82vw, 0.62rem);
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
+  min-width: clamp(75px, 11vw, 105px);
+  flex-shrink: 0;
+  margin-top: 1px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 0;
+}
+
+.c-key:hover { opacity: 0.75; }
+
+.c-val {
+  font-size: clamp(0.68rem, 1.15vw, 0.9rem);
+  color: rgba(221, 230, 245, 0.76);
+  line-height: 1.6;
+}
+
+.c-val strong { color: var(--tx); font-weight: 500; }
+.c-val em     { color: var(--tx2); font-style: normal; }
+
+
+/* ============================================================
+   31. CANVAS POST — FULL COMPONENT SYSTEM
+   Each component has been pulled from the inline-styled
+   D04_Quiz_Canvas_Post.html and given a proper class name
+   ============================================================ */
+
+/* ── Page wrapper — centered column ── */
+.canvas-post {
+  max-width: 620px;
+  margin: 0 auto;
+  background: #06080f;
+  color: #dde6f5;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ── Preview bar — shown on preview page only, not inside Canvas ── */
+.cp-preview-bar {
+  max-width: 620px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cp-preview-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #888;
+  font-family: 'Courier New', monospace;
+}
+
+.cp-copy-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  background: #0b0f1e;
+  color: #f97316;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: filter 0.2s;
+}
+
+.cp-copy-btn:hover { filter: brightness(1.15); }
+.cp-copy-btn.done  { background: #14b8a6; color: #fff; }
+
+.cp-preview-note {
+  max-width: 620px;
+  margin: 14px auto 0;
+  font-size: 11px;
+  color: #999;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+}
+
+/* ── Top accent rule — 3px orange bar ── */
+.cp-top-rule {
+  height: 3px;
+  background: #f97316;
+}
+
+/* ── Bottom accent rule — fades out to right ── */
+.cp-bottom-rule {
+  height: 3px;
+  background: linear-gradient(90deg, #f97316 0%, rgba(249, 115, 22, 0) 100%);
+}
+
+/* ── Header section ── */
+.cp-header {
+  padding: 22px 26px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* 3×3 logo mark inside header */
+.cp-logo-mark {
+  display: grid;
+  grid-template-columns: repeat(3, 9px);
+  grid-template-rows: repeat(3, 9px);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.cp-logo-cell {
+  background: rgba(221, 230, 245, 0.12);
+}
+
+.cp-logo-cell.lit {
+  background: #f97316;
+  box-shadow: 0 0 6px rgba(249, 115, 22, 0.50);
+}
+
+/* Header text block */
+.cp-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f97316;
+  margin-bottom: 5px;
+}
+
+.cp-title {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 30px;
+  color: #dde6f5;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.cp-subtitle {
+  font-size: 10px;
+  color: #8898b8;
+  letter-spacing: 0.1em;
+}
+
+/* ── Context banner — orange tinted info strip ── */
+.cp-context-banner {
+  padding: 13px 26px;
+  background: rgba(249, 115, 22, 0.05);
+  border-bottom: 1px solid rgba(249, 115, 22, 0.12);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.cp-banner-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.cp-banner-text {
+  font-size: 11px;
+  color: rgba(249, 115, 22, 0.88);
+  line-height: 1.65;
+  letter-spacing: 0.03em;
+}
+
+.cp-banner-text strong { color: #f97316; }
+
+/* ── Launch button section ── */
+.cp-launch-section {
+  padding: 26px 26px 22px;
+  text-align: center;
+  background: rgba(249, 115, 22, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cp-launch-pre {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8898b8;
+  margin-bottom: 14px;
+}
+
+/* The actual launch link — styled as a button */
+.cp-launch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #f97316;
+  color: #06080f;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  text-decoration: none;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.cp-launch-post {
+  font-size: 9px;
+  color: #4a5570;
+  margin-top: 10px;
+  letter-spacing: 0.1em;
+}
+
+/* ── Section header — small orange label ── */
+.cp-section-header {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f97316;
+  margin-bottom: 14px;
+}
+
+/* ── Parts section — contains part cards ── */
+.cp-parts-section {
+  padding: 20px 26px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── Part card — colored border box ── */
+.cp-part-card {
+  border: 1px solid;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+.cp-part-card:last-child { margin-bottom: 0; }
+
+/* Part card color variants */
+.cp-part-card.orange {
+  border-color: rgba(249, 115, 22, 0.20);
+  background: rgba(249, 115, 22, 0.05);
+}
+
+.cp-part-card.yellow {
+  border-color: rgba(234, 179, 8, 0.20);
+  background: rgba(234, 179, 8, 0.04);
+}
+
+.cp-part-card.green {
+  border-color: rgba(62, 255, 160, 0.20);
+  background: rgba(62, 255, 160, 0.04);
+}
+
+.cp-part-card.blue {
+  border-color: rgba(56, 189, 248, 0.20);
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.cp-part-title {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.cp-part-title.orange { color: #f97316; }
+.cp-part-title.yellow { color: #eab308; }
+.cp-part-title.green  { color: #3effa0; }
+.cp-part-title.blue   { color: #38bdf8; }
+
+.cp-part-desc {
+  font-size: 11px;
+  color: #8898b8;
+  line-height: 1.6;
+}
+
+.cp-part-desc strong { color: #dde6f5; }
+
+/* ── Instructions section ── */
+.cp-instructions-section {
+  padding: 20px 26px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Numbered instruction step */
+.cp-step {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.cp-step:last-child { margin-bottom: 0; }
+
+.cp-step-num {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 18px;
+}
+
+.cp-step-num.orange { color: #f97316; }
+.cp-step-num.green  { color: #3effa0; }
+
+.cp-step-text {
+  font-size: 12px;
+  color: #8898b8;
+  line-height: 1.6;
+}
+
+.cp-step-text strong        { color: #dde6f5; }
+.cp-step-text strong.orange { color: #f97316; }
+.cp-step-text strong.yellow { color: #eab308; }
+.cp-step-text strong.green  { color: #3effa0; }
+.cp-step-text strong.blue   { color: #38bdf8; }
+
+/* ── Lock warning banner — red tint ── */
+.cp-lock-warning {
+  padding: 14px 26px;
+  background: rgba(248, 113, 113, 0.05);
+  border-bottom: 1px solid rgba(248, 113, 113, 0.12);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.cp-lock-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.cp-lock-text {
+  font-size: 11px;
+  color: rgba(248, 113, 113, 0.80);
+  line-height: 1.65;
+  letter-spacing: 0.04em;
+}
+
+.cp-lock-text strong { color: #f87171; }
+
+/* ── Grading section ── */
+.cp-grading-section {
+  padding: 18px 26px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Individual grading row */
+.cp-grade-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 0;
+}
+
+.cp-grade-label {
+  font-size: 11px;
+  color: #8898b8;
+}
+
+.cp-grade-pts {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 18px;
+  color: #f97316;
+}
+
+/* Total row — slightly taller, green total */
+.cp-grade-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 0;
+  margin-top: 2px;
+}
+
+.cp-grade-total-label {
+  font-size: 12px;
+  color: #dde6f5;
+  font-weight: bold;
+}
+
+.cp-grade-total-pts {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 24px;
+  color: #3effa0;
+  letter-spacing: 0.04em;
+}
+
+.cp-grading-note {
+  margin-top: 8px;
+  font-size: 10px;
+  color: #4a5570;
+  line-height: 1.65;
+}
+
+/* ── Footer ── */
+.cp-footer {
+  padding: 12px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cp-footer-left {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #4a5570;
+}
+
+.cp-footer-right {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: #4a5570;
+}
+
+
+/* ============================================================
+   32. STUDENT QUIZ / WORKSHEET — FULL COMPONENT SYSTEM
+   ============================================================ */
+
+/* ── Page chrome ── */
+.quiz-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2rem) 4rem;
+}
+
+/* Top rule */
+.quiz-top-rule {
+  height: 3px;
+  background: var(--orange);
+  margin-bottom: 0;
+}
+
+/* ── Student info block ── */
+.quiz-info-block {
+  background: var(--d1);
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  padding: 20px 24px;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.quiz-info-eyebrow {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 14px;
+}
+
+.quiz-info-fields {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: clamp(120px, 20vw, 180px);
+}
+
+.quiz-field-label {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tx3);
+}
+
+.quiz-field-input {
+  font-family: var(--font-m);
+  font-size: 13px;
+  color: var(--tx);
+  background: rgba(255, 255, 255, 0.04);
+  border: var(--hr) solid rgba(255, 255, 255, 0.12);
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.quiz-field-input:focus {
+  border-color: var(--orange);
+}
+
+/* ── Quiz section / part ── */
+.quiz-part {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* Part header banner */
+.quiz-part-header {
+  padding: 12px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.quiz-part-header.orange { background: rgba(249, 115, 22, 0.08); border-left: 3px solid var(--orange); }
+.quiz-part-header.yellow { background: rgba(234, 179, 8, 0.06);   border-left: 3px solid var(--yellow); }
+.quiz-part-header.green  { background: rgba(62, 255, 160, 0.06);  border-left: 3px solid var(--green); }
+.quiz-part-header.blue   { background: rgba(56, 189, 248, 0.06);  border-left: 3px solid var(--blue); }
+
+.quiz-part-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.quiz-part-title.orange { color: var(--orange); }
+.quiz-part-title.yellow { color: var(--yellow); }
+.quiz-part-title.green  { color: var(--green); }
+.quiz-part-title.blue   { color: var(--blue); }
+
+.quiz-part-pts {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-left: auto;
+}
+
+/* ── Multiple choice question ── */
+.quiz-question {
+  background: var(--d1);
+  border: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding: 16px 20px;
+  margin-bottom: 10px;
+}
+
+.quiz-q-num {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+.quiz-q-text {
+  font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+  color: var(--tx);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+
+/* Answer options container */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Single answer option */
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  font-size: clamp(0.72rem, 1.1vw, 0.86rem);
+  color: var(--tx2);
+  line-height: 1.5;
+}
+
+.quiz-option:hover:not(.locked-correct):not(.locked-wrong) {
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--tx);
+}
+
+/* Correct answer — locked state after first click */
+.quiz-option.locked-correct {
+  border-color: var(--green);
+  background: rgba(62, 255, 160, 0.08);
+  color: var(--green);
+  cursor: default;
+}
+
+/* Wrong answer — locked state after first click */
+.quiz-option.locked-wrong {
+  border-color: var(--red);
+  background: rgba(248, 113, 113, 0.06);
+  color: rgba(248, 113, 113, 0.60);
+  cursor: default;
+  text-decoration: line-through;
+}
+
+/* Option letter prefix — A / B / C / D */
+.quiz-option-letter {
+  font-family: var(--font-d);
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+  color: var(--tx3);
+}
+
+.quiz-option.locked-correct .quiz-option-letter { color: var(--green); }
+.quiz-option.locked-wrong   .quiz-option-letter { color: rgba(248, 113, 113, 0.50); }
+
+/* ── Classification / sorting zone layout ── */
+.quiz-sort-layout {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.quiz-sort-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quiz-sort-zones {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.quiz-sort-zone {
+  flex: 1;
+  min-width: clamp(100px, 20vw, 160px);
+  border: 1px dashed rgba(255, 255, 255, 0.20);
+  padding: 12px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.quiz-sort-zone:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.quiz-sort-zone.correct {
+  border-color: var(--green);
+  border-style: solid;
+  background: rgba(62, 255, 160, 0.05);
+}
+
+.quiz-sort-zone.incorrect {
+  animation: zbad 0.42s ease;
+}
+
+.quiz-zone-label {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.30);
+}
+
+.quiz-zone-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* ── Ordering / ranking track ── */
+.quiz-rank-track {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.quiz-rank-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.quiz-rank-position {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tx3);
+}
+
+.quiz-rank-drop {
+  width: clamp(60px, 10vw, 80px);
+  height: clamp(60px, 10vw, 80px);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.quiz-rank-drop:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.quiz-rank-drop.filled {
+  border-color: rgba(56, 189, 248, 0.40);
+  border-style: solid;
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.quiz-rank-drop.correct {
+  border-color: var(--green);
+  border-style: solid;
+  background: rgba(62, 255, 160, 0.05);
+}
+
+/* ── Score display bar ── */
+.quiz-score-bar {
+  background: var(--d1);
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--green);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.quiz-score-label {
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tx3);
+}
+
+.quiz-score-value {
+  font-family: var(--font-d);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--green);
+  letter-spacing: 0.04em;
+}
+
+.quiz-score-fraction {
+  font-family: var(--font-m);
+  font-size: 11px;
+  color: var(--tx3);
+  margin-left: 2px;
+}
+
+/* ── Wrong attempt counter (visible to teacher) ── */
+.quiz-attempt-note {
+  font-family: var(--font-m);
+  font-size: 10px;
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+  margin-top: 6px;
+}
+
+/* ── Submit / Copy results button ── */
+.quiz-copy-btn {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  background: var(--green);
+  color: var(--void);
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  font-weight: 700;
+  transition: filter 0.2s, opacity 0.2s;
+  margin-top: clamp(1rem, 2vw, 1.8rem);
+}
+
+.quiz-copy-btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.quiz-copy-btn:disabled {
+  opacity: 0.30;
+  cursor: not-allowed;
+}
+
+.quiz-copy-btn.done {
+  background: var(--blue);
+  color: var(--void);
+}
+
+/* ── Submission payload (text entry block, hidden until copied) ── */
+.quiz-payload-block {
+  background: rgba(255, 255, 255, 0.025);
+  border: var(--hr) solid rgba(255, 255, 255, 0.08);
+  padding: 16px 20px;
+  margin-top: 12px;
+  font-family: var(--font-m);
+  font-size: 11px;
+  color: var(--tx2);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  display: none;
+}
+
+.quiz-payload-block.visible {
+  display: block;
+}
+
+/* ── Quiz page footer ── */
+.quiz-footer {
+  margin-top: clamp(2rem, 4vw, 3.5rem);
+  padding-top: 16px;
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quiz-footer-left,
+.quiz-footer-right {
+  font-family: var(--font-m);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tx3);
+}
+
+
+/* ============================================================
+   33. UTILITY CLASSES
+   ============================================================ */
+
+/* Accent color helpers */
+.u-orange  { color: var(--orange); }
+.u-green   { color: var(--green); }
+.u-blue    { color: var(--blue); }
+.u-yellow  { color: var(--yellow); }
+.u-red     { color: var(--red); }
+.u-purple  { color: var(--purple); }
+.u-accent  { color: var(--accent); }
+.u-tx2     { color: var(--tx2); }
+.u-tx3     { color: var(--tx3); }
+
+/* Spacing helpers */
+.u-mt-auto { margin-top: auto; }
+
+/* Flex helpers */
+.u-flex     { display: flex; }
+.u-flex-col { display: flex; flex-direction: column; }
+.u-flex-1   { flex: 1; }
+.u-gap      { gap: var(--gap); }
+.u-gap2     { gap: var(--gap2); }
+
+/* Border separators */
+.u-border-top {
+  border-top: var(--hr) solid rgba(255, 255, 255, 0.06);
+  padding-top: clamp(0.38rem, 0.9vh, 0.62rem);
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   34. KEYFRAME ANIMATIONS
+   ============================================================ */
+
+/* Brand mark floating rotation */
+@keyframes bfloat {
+  0%   { transform: rotateY(0deg) rotateX(2.5deg); }
+  33%  { transform: rotateY(6deg) rotateX(-1.5deg); }
+  66%  { transform: rotateY(-5deg) rotateX(3deg); }
+  100% { transform: rotateY(0deg) rotateX(2.5deg); }
+}
+
+/* Brand mark center row idle pulse */
+@keyframes scidle {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.72; }
+}
+
+/* Drop zone wrong-placement flash */
+@keyframes zbad {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.20);
+    background: transparent;
+  }
+  50% {
+    border-color: var(--red);
+    background: rgba(248, 113, 113, 0.10);
+  }
+}
+
+
+/* ============================================================
+   35. RESPONSIVE BREAKPOINTS
+   ============================================================ */
+
+/* ── Mobile — up to 640px ── */
+@media (max-width: 640px) {
+  :root {
+    --px: 0.9rem;
+    --pt: 3rem;
+    --pb: 3.5rem;
+  }
+
+  /* Hide scene strip and brand text on small screens */
+  #scene-strip        { display: none; }
+  .bname, .bsub       { display: none; }
+  .btxt               { display: none; }
+
+  /* Scale down headings */
+  h1, .h1 { font-size: clamp(2.2rem, 10vw, 3.2rem); }
+  h2, .h2 { font-size: clamp(1.8rem, 8.5vw, 2.6rem); }
+
+  /* Collapse agenda to single column */
+  .ag-grid { grid-template-columns: 1fr; }
+
+  /* Stack PT main area */
+  .pt-main-area  { flex-direction: column; }
+  .el-panel      { width: 100%; min-height: 0; }
+
+  /* Reduce game spacing */
+  .g2-cols { gap: 0.6rem; }
+  .g3-bins { gap: 0.45rem; }
+  .g3-bin  { min-width: clamp(82px, 26vw, 140px); }
+
+  /* Stack region layout */
+  .tr-layout     { flex-direction: column; overflow-y: auto; }
+  .tr-map-wrap   { min-width: unset; }
+
+  /* Shorter flip cards */
+  .flip-card       { height: clamp(105px, 18vh, 175px); }
+  .flip-gallery    { gap: clamp(6px, 1.1vw, 10px); }
+  .family-gallery  { gap: clamp(6px, 1.1vw, 10px); }
+  .fam-card        { height: clamp(120px, 20vh, 190px); }
+
+  /* Trend cards */
+  .trend-grid      { grid-template-columns: 1fr; }
+
+  /* Review cards */
+  .review-grid     { grid-template-columns: 1fr 1fr; }
+
+  /* Compare grid */
+  .compare-grid    { grid-template-columns: 1fr; }
+
+  /* Bond builder */
+  .bb-stage        { flex-direction: column; }
+
+  /* Shell builder */
+  .shell-layout    { flex-direction: column; }
+
+  /* Quiz */
+  .quiz-info-fields   { flex-direction: column; }
+  .quiz-sort-zones    { flex-direction: column; }
+  .quiz-part-header   { flex-wrap: wrap; }
+
+  /* Canvas post */
+  .cp-header { gap: 10px; }
+  .cp-title  { font-size: 22px; }
+}
+
+/* ── Tablet — 641px–900px ── */
+@media (min-width: 641px) and (max-width: 900px) {
+  h1, .h1 { font-size: clamp(2.6rem, 5.5vw, 4.5rem); }
+  h2, .h2 { font-size: clamp(2rem, 4.2vw, 3.5rem); }
+
+  .tr-layout   { flex-wrap: wrap; }
+  .tr-map-wrap { flex: 0 0 100%; }
+  .review-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Reduced motion — accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
