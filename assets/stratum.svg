@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Stratosyn mark: three-by-three grid with the middle row active in gold">
+  <defs>
+    <style>
+      .cell { fill: none; stroke: #7884a8; stroke-width: 1.6; }
+      .active { fill: #f5c842; stroke: #f5c842; }
+      .pulse { transform-origin: 50% 50%; animation: stratum-breathe 3.2s ease-in-out infinite; }
+      @keyframes stratum-breathe {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.55; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pulse { animation: none; }
+      }
+    </style>
+  </defs>
+  <!-- Row 1 — record -->
+  <rect class="cell" x="4"  y="4"  width="28" height="28" rx="5" ry="5"/>
+  <rect class="cell" x="36" y="4"  width="28" height="28" rx="5" ry="5"/>
+  <rect class="cell" x="68" y="4"  width="28" height="28" rx="5" ry="5"/>
+  <!-- Row 2 — active -->
+  <g class="pulse">
+    <rect class="cell active" x="4"  y="36" width="28" height="28" rx="5" ry="5"/>
+    <rect class="cell active" x="36" y="36" width="28" height="28" rx="5" ry="5"/>
+    <rect class="cell active" x="68" y="36" width="28" height="28" rx="5" ry="5"/>
+  </g>
+  <!-- Row 3 — consequence -->
+  <rect class="cell" x="4"  y="68" width="28" height="28" rx="5" ry="5"/>
+  <rect class="cell" x="36" y="68" width="28" height="28" rx="5" ry="5"/>
+  <rect class="cell" x="68" y="68" width="28" height="28" rx="5" ry="5"/>
+</svg>
